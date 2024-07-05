@@ -1,0 +1,78 @@
+# general configuration: dev, stag, prod
+general:
+  buildMode: dev
+
+# untuk detail message log
+log:
+  level: DEBUG
+  format: json
+
+# untuk HTTP
+http:
+  address: 0.0.0.0
+  port: 8080
+  requestTimeout: 600s
+  readTimeout: 10s
+  writeTimeout: 5s
+  httpClientTLS: false
+  # when logHttpRequest is enabled, we need to implement the publisher service that implements the prepared interface
+  logHttpRequest: false
+
+# untuk CORS
+cors:
+  #  allowedOrigins: ["http://the-only-valid-domain.com"]
+  allowedOrigins: ["https://*", "http://*"]
+  #  allowedOrigins: ["*"]
+  #  allowedMethods: ["*"]
+  allowedMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+  #  allowedHeaders: ["*"]
+  allowedHeaders: ["X-PINGOTHER", "Accept", "Authorization", "Content-Type", "X-CSRF-Token"]
+  #  exposedHeaders: ["*"]
+  exposedHeaders: ["Link"]
+  #  allowCredentials: true
+  allowCredentials: false
+  # value=600 is the maximum value not ignored by any of major browsers
+  maxAge: 6000
+  # Debugging flag adds additional output to debug server side CORS issues
+  Debug: false
+#  Debug: true
+
+# JWT auth
+jwtAuth:
+  jwtSecret: secret
+  jwtAlgorithm: HS256
+  jwtExpiredInSec: 36000000
+
+apiAuth:
+  secretKey: 7A25432A462D4A614E645267556B5870
+  privateKey: /home/ardi/devel/projects/ardihikaru/graphql-example-part-1/_data/private.pem
+  hashCost: 9
+
+# untuk database MySQL
+dbMySQL:
+  host: 84.247.148.61
+  #  port: 3306
+  port: 33060
+  user: root
+  pass: 7rdKm2Z6okH1Httylxti
+  dbName: apem_service_test
+  #  dbName: rest_with_casbin_ardi
+
+  # untuk publish log;
+  # perlu didefinisikan level log apa saja yang akan di publish
+  # please set notice and error always true!
+logPublisher:
+  notice: true
+  error: true
+  info: false
+  warn: false
+  debug: false
+
+# untuk RBAC (menggunakan casbin)
+enforcer:
+  modelFile: config/rbac_model.conf
+  tableName: casbin_rule
+
+# untuk graphQL
+graphQL:
+  publicFunctions: ["userLogin"]

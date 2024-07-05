@@ -1,0 +1,33 @@
+type User {
+  userId: ID! @goTag(key: "db", value: "user_id")
+  userNm: String! @goTag(key: "db", value: "user_nm")
+  isAdmin: Int! @goTag(key: "db", value: "is_admin")
+  statusCd: String! @goTag(key: "db", value: "status_cd")
+}
+
+type TokenResponse {
+  userId: ID!
+  token: String!
+  expired: Int!
+}
+
+input UserInput {
+  userId: ID!
+  userNm: String!
+  isAdmin: Int!
+  statusCd: String!
+  passHash: String!
+}
+
+extend type Query {
+  userGet(userId: ID): User!
+  userList(userId: ID!, statusCd: String!): [User]!
+}
+
+extend type Mutation {
+  userLogin(userName: String!, password: String!): TokenResponse!
+  userCreate(data: UserInput!): User!
+  userUpdate(data: UserInput!): [User]!
+
+  passwordEncrypt(password: String!): String!
+}

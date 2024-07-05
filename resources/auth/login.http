@@ -1,0 +1,23 @@
+### POST auth login
+# @name authLogin
+
+POST {{base_url}}/query
+Content-Type: application/json
+X-REQUEST-TYPE: GraphQL
+
+mutation user( $username: String!, $password: String! ) {
+    userLogin( userName: $username, password: $password ) {
+        expired
+        token
+        userId
+    }
+}
+
+{
+    "username": "{{username}}",
+    "password": "{{password}}"
+}
+
+#### Capturing variable response (testing purpose)
+
+@token = {{authLogin.response.body.$.data.userLogin.token}}

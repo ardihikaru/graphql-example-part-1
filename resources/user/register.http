@@ -1,0 +1,25 @@
+
+POST {{base_url}}/query
+Content-Type: application/json
+X-REQUEST-TYPE: GraphQL
+
+mutation userCreate($data: UserInput!) {
+  userCreate(data: $data) {
+    userId
+    userNm
+    isAdmin
+    statusCd
+  }
+}
+
+{
+    "data": {
+        "userId": "",
+        "passHash": "{{password}}",
+        "statusCd": "active",
+        "userNm": "{{username}}",
+        "isAdmin": 1
+    }
+}
+
+###
