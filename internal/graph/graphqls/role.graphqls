@@ -1,0 +1,7 @@
+type Role {
+  roleId: ID! @goTag(key: "db", value: "role_id")
+}
+
+extend type Query {
+  roleGet(roleId: ID): Role!
+}
