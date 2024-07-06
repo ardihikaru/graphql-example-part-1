@@ -44,7 +44,6 @@ jwtAuth:
   jwtExpiredInSec: 36000000
 
 apiAuth:
-  secretKey: 7A25432A462D4A614E645267556B5870
   privateKey: /home/ardi/devel/projects/ardihikaru/graphql-example-part-1/_data/private.pem
   hashCost: 9
 
@@ -55,8 +54,7 @@ dbMySQL:
   port: 33060
   user: root
   pass: 7rdKm2Z6okH1Httylxti
-  dbName: apem_service_test
-  #  dbName: rest_with_casbin_ardi
+  dbName: graphql_with_casbin_db
 
   # untuk publish log;
   # perlu didefinisikan level log apa saja yang akan di publish

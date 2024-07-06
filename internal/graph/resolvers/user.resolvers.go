@@ -14,21 +14,17 @@ import (
 	"github.com/ardihikaru/graphql-example-part-1/internal/graph/model"
 	"github.com/ardihikaru/graphql-example-part-1/internal/service/auth"
 	"github.com/ardihikaru/graphql-example-part-1/internal/service/session"
-	"github.com/ardihikaru/graphql-example-part-1/internal/service/user"
-
 	"github.com/ardihikaru/graphql-example-part-1/pkg/middleware"
 )
 
 // UserLogin generates a token based on the provided credential
 func (r *mutationResolver) UserLogin(ctx context.Context, userName string, password string) (*model.TokenResponse, error) {
-	usrSvc := user.NewService(r.Log, r.Db, r.Cfg)
-
-	correct, err := usrSvc.Authenticate(userName, password)
+	correct, err := r.UserSvc.Authenticate(userName, password)
 	if !correct {
 		return nil, err
 	}
 
-	userId, err := usrSvc.GetUserIdByUsername(userName)
+	userId, err := r.UserSvc.GetUserIdByUsername(userName)
 	if err != nil {
 		return nil, err
 	}
@@ -48,12 +44,10 @@ func (r *mutationResolver) UserLogin(ctx context.Context, userName string, passw
 
 // UserCreate creates a new user
 func (r *mutationResolver) UserCreate(ctx context.Context, data model.UserInput) (*model.User, error) {
-	usrSvc := user.NewService(r.Log, r.Db, r.Cfg)
-
 	// extracts session from the context
 	sessionData := ctx.Value(middleware.SessionKey).(session.Session)
 
-	resp, err := usrSvc.Create(data, &sessionData.UserId)
+	resp, err := r.UserSvc.Create(data, &sessionData.UserId)
 	return resp, err
 }
 
@@ -64,29 +58,23 @@ func (r *mutationResolver) UserUpdate(ctx context.Context, data model.UserInput)
 
 // PasswordEncrypt encrypts the provided password
 func (r *mutationResolver) PasswordEncrypt(ctx context.Context, password string) (string, error) {
-	usrSvc := user.NewService(r.Log, r.Db, r.Cfg)
-
-	passwordEncrypted, err := usrSvc.EncryptPassword(password, r.Cfg.Encryption.PublicKeyRSA)
+	passwordEncrypted, err := r.UserSvc.EncryptPassword(password, r.Cfg.Encryption.PublicKeyRSA)
 	return base64.StdEncoding.EncodeToString(passwordEncrypted), err
 }
 
 // UserGet fetches a user data
 func (r *queryResolver) UserGet(ctx context.Context, userID *string) (*model.User, error) {
-	usrSvc := user.NewService(r.Log, r.Db, r.Cfg)
-
 	var setUserId int64
 	if userID != nil {
 		setUserId, _ = strconv.ParseInt(*userID, 10, 64)
 	}
 
-	return usrSvc.GetById(setUserId)
+	return r.UserSvc.GetById(setUserId)
 }
 
 // UserList fetches list of user
 func (r *queryResolver) UserList(ctx context.Context, userID string, statusCd string) ([]*model.User, error) {
-	usrSvc := user.NewService(r.Log, r.Db, r.Cfg)
-
-	return usrSvc.List(userID, statusCd)
+	return r.UserSvc.List(userID, statusCd)
 }
 
 // Mutation returns generated.MutationResolver implementation.

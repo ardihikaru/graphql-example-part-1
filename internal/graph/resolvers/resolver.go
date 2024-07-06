@@ -5,6 +5,8 @@ import (
 
 	"github.com/developersismedika/sqlx"
 
+	"github.com/ardihikaru/graphql-example-part-1/internal/service/user"
+
 	"github.com/ardihikaru/graphql-example-part-1/pkg/config"
 	"github.com/ardihikaru/graphql-example-part-1/pkg/enforcer"
 	"github.com/ardihikaru/graphql-example-part-1/pkg/jwtauth"
@@ -24,4 +26,7 @@ type Resolver struct {
 	Log       *logger.Logger
 	TokenAuth *jwtauth.JWTAuth
 	Enforcer  *enforcer.Enforcer
+
+	// list of services
+	UserSvc *user.Service
 }
