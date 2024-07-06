@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/ardihikaru/graphql-example-part-1/internal/graph/model"
+	"github.com/ardihikaru/graphql-example-part-1/internal/service/user/dto"
 
 	mySqlx "github.com/ardihikaru/graphql-example-part-1/pkg/mysqldb"
 )
@@ -15,7 +15,7 @@ type Store struct {
 }
 
 type User struct {
-	model.User
+	dto.User
 	Passwd string `db:"pass_hash"`
 }
 
@@ -24,8 +24,8 @@ const (
 )
 
 // ToService converts the userDoc struct into User struct from the service
-func (u *User) ToService() *model.User {
-	acc := &model.User{
+func (u *User) ToService() *dto.User {
+	acc := &dto.User{
 		UserID:   u.UserID,
 		UserNm:   u.UserNm,
 		IsAdmin:  u.IsAdmin,
@@ -36,7 +36,7 @@ func (u *User) ToService() *model.User {
 }
 
 // InsertUser inserts a new user
-func (store *Store) InsertUser(username, hashedPassword, status string, isAdmin int, setCreateUserID int64) (*model.User, error) {
+func (store *Store) InsertUser(username, hashedPassword, status string, isAdmin int, setCreateUserID int64) (*dto.User, error) {
 	query := fmt.Sprintf(`
     	INSERT INTO %s (user_nm, pass_hash, is_admin, status_cd, created_user_id, created_dttm) 
     	VALUES (:user_nm, :pass_hash, :is_admin, :status_cd, :created_user_id, NOW())
@@ -63,7 +63,7 @@ func (store *Store) InsertUser(username, hashedPassword, status string, isAdmin 
 	lastInsertedId, _ := (*rslt).(sql.Result).LastInsertId()
 
 	// builds results
-	userData := &model.User{
+	userData := &dto.User{
 		UserID:   strconv.FormatInt(lastInsertedId, 10),
 		UserNm:   username,
 		IsAdmin:  isAdmin,
@@ -74,7 +74,7 @@ func (store *Store) InsertUser(username, hashedPassword, status string, isAdmin 
 }
 
 // GetUserById fetches user data by uid
-func (store *Store) GetUserById(userId int64) (*model.User, error) {
+func (store *Store) GetUserById(userId int64) (*dto.User, error) {
 	var err error
 	var row *sql.Row
 	record := User{}
@@ -102,7 +102,7 @@ func (store *Store) GetUserById(userId int64) (*model.User, error) {
 }
 
 // GetUsers fetches list of user
-func (store *Store) GetUsers(userIdStr, statusCd string) ([]*model.User, error) {
+func (store *Store) GetUsers(userIdStr, statusCd string) ([]*dto.User, error) {
 	var err error
 
 	query := fmt.Sprintf(`
@@ -118,7 +118,7 @@ func (store *Store) GetUsers(userIdStr, statusCd string) ([]*model.User, error) 
 		query = fmt.Sprintf("%s AND status_cd='%s'", query, statusCd)
 	}
 
-	var userList []*model.User
+	var userList []*dto.User
 	rows, err := store.Queryx(query, nil)
 	if err != nil && err == sql.ErrNoRows {
 		store.Log.Debug(fmt.Sprintf("record is not found in the database"))
@@ -130,22 +130,22 @@ func (store *Store) GetUsers(userIdStr, statusCd string) ([]*model.User, error) 
 
 	// starts to assign value to the designated struct
 	for rows.Next() {
-		user := model.User{}
-		err = rows.StructScan(&user)
+		usr := dto.User{}
+		err = rows.StructScan(&usr)
 		if err != nil {
 			store.Log.Error(fmt.Sprintf("scan failed: %s", err.Error()))
 			return nil, fmt.Errorf("QUERY_SCANNING_FAILED")
 		}
 
 		// appends
-		userList = append(userList, &user)
+		userList = append(userList, &usr)
 	}
 
 	return userList, nil
 }
 
 // GetUserCredByUsername fetches user data by username
-func (store *Store) GetUserCredByUsername(username string) (*model.User, *string, error) {
+func (store *Store) GetUserCredByUsername(username string) (*dto.User, *string, error) {
 	var err error
 	var row *sql.Row
 	record := User{}

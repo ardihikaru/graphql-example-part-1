@@ -10,23 +10,21 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/developersismedika/sqlx"
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/ardihikaru/graphql-example-part-1/internal/graph/model"
-	"github.com/ardihikaru/graphql-example-part-1/internal/storage/user"
+	"github.com/ardihikaru/graphql-example-part-1/internal/service/user/dto"
 
 	"github.com/ardihikaru/graphql-example-part-1/pkg/config"
 	"github.com/ardihikaru/graphql-example-part-1/pkg/logger"
-	"github.com/ardihikaru/graphql-example-part-1/pkg/mysqldb"
 )
 
 // storage provides the interface for the functionality of MinIO
 type storage interface {
-	InsertUser(username, hashedPassword, status string, isAdmin int, setCreateUserID int64) (*model.User, error)
-	GetUserById(userId int64) (*model.User, error)
-	GetUsers(userIdStr, statusCd string) ([]*model.User, error)
-	GetUserCredByUsername(username string) (*model.User, *string, error)
+	InsertUser(username, hashedPassword, status string, isAdmin int, setCreateUserID int64) (*dto.User, error)
+	GetUserById(userId int64) (*dto.User, error)
+	GetUsers(userIdStr, statusCd string) ([]*dto.User, error)
+	GetUserCredByUsername(username string) (*dto.User, *string, error)
 }
 
 // Service load user service with model.User
@@ -37,18 +35,10 @@ type Service struct {
 }
 
 // NewService creates new user service
-func NewService(log *logger.Logger, db *sqlx.DB, cfg *config.Config) *Service {
-	// builds user storage
-	userStorage := user.Store{
-		Storage: &mysqldb.Storage{
-			Db:  db,
-			Log: log,
-		},
-	}
-
+func NewService(log *logger.Logger, storage storage, cfg *config.Config) *Service {
 	return &Service{
 		log:     log,
-		storage: &userStorage,
+		storage: storage,
 		cfg:     cfg,
 	}
 }
@@ -85,7 +75,7 @@ func (svc *Service) Create(data model.UserInput, CreateUserID *int64) (*model.Us
 		return &ret, err
 	}
 
-	return userRecord, nil
+	return userRecord.ToModel(), nil
 }
 
 // List gets list of user
@@ -98,12 +88,22 @@ func (svc *Service) List(userIdStr, statusCd string) ([]*model.User, error) {
 		return nil, err // Return other errors
 	}
 
-	return userList, nil
+	var userListModel []*model.User
+	for _, usr := range userList {
+		userListModel = append(userListModel, usr.ToModel())
+	}
+
+	return userListModel, nil
 }
 
 // GetById gets user data by ID
 func (svc *Service) GetById(userId int64) (*model.User, error) {
-	return svc.storage.GetUserById(userId)
+	usr, err := svc.storage.GetUserById(userId)
+	if err != nil {
+		return nil, err
+	}
+
+	return usr.ToModel(), nil
 }
 
 // GetUserIdByUsername gets user data by username

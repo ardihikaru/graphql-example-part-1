@@ -86,11 +86,10 @@ type GraphQL struct {
 }
 
 type Encryption struct {
-	SecretKey     string `mapstructure:"secretKey"`
 	PrivateKey    string `mapstructure:"privateKey"`
+	HashCost      int    `mapstructure:"hashCost"`
 	PrivateKeyRSA *rsa.PrivateKey
 	PublicKeyRSA  *rsa.PublicKey
-	HashCost      int `mapstructure:"hashCost"`
 }
 
 type Config struct {
