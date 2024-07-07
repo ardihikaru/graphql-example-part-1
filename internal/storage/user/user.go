@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/ardihikaru/graphql-example-part-1/internal/service/user/dto"
+	"github.com/ardihikaru/graphql-example-part-1/pkg/service/user/dto"
 
 	mySqlx "github.com/ardihikaru/graphql-example-part-1/pkg/mysqldb"
 )
@@ -36,7 +36,8 @@ func (u *User) ToService() *dto.User {
 }
 
 // InsertUser inserts a new user
-func (store *Store) InsertUser(username, hashedPassword, status string, isAdmin int, setCreateUserID int64) (*dto.User, error) {
+func (store *Store) InsertUser(username, hashedPassword, status string, isAdmin int,
+	setCreateUserID int64) (*dto.User, error) {
 	query := fmt.Sprintf(`
     	INSERT INTO %s (user_nm, pass_hash, is_admin, status_cd, created_user_id, created_dttm) 
     	VALUES (:user_nm, :pass_hash, :is_admin, :status_cd, :created_user_id, NOW())

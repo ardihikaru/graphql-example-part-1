@@ -29,12 +29,12 @@ func GetRouter(deps *application.Dependencies) *chi.Mux {
 		Debug:            deps.Cfg.Cors.Debug,
 	}))
 
-	buildTree(r, deps)
+	buildGraphQLTree(r, deps)
 
 	return r
 }
 
-func buildTree(r *chi.Mux, deps *application.Dependencies) {
-	// handles public related route(s)
+// buildGraphQLTree handles graphQL related route(s)
+func buildGraphQLTree(r *chi.Mux, deps *application.Dependencies) {
 	r.Mount("/", gqlrouter.GraphQLRoutes(deps))
 }

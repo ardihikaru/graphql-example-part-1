@@ -12,14 +12,13 @@ import (
 
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/ardihikaru/graphql-example-part-1/internal/graph/model"
-	"github.com/ardihikaru/graphql-example-part-1/internal/service/user/dto"
-
 	"github.com/ardihikaru/graphql-example-part-1/pkg/config"
+	"github.com/ardihikaru/graphql-example-part-1/pkg/graph/user/model"
 	"github.com/ardihikaru/graphql-example-part-1/pkg/logger"
+	"github.com/ardihikaru/graphql-example-part-1/pkg/service/user/dto"
 )
 
-// storage provides the interface for the functionality of MinIO
+// storage provides the interface for the functionality of the user storage
 type storage interface {
 	InsertUser(username, hashedPassword, status string, isAdmin int, setCreateUserID int64) (*dto.User, error)
 	GetUserById(userId int64) (*dto.User, error)

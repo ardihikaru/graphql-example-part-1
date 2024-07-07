@@ -8,10 +8,6 @@ type Mutation struct {
 type Query struct {
 }
 
-type Role struct {
-	RoleID string `json:"roleId" db:"role_id"`
-}
-
 type TokenResponse struct {
 	UserID  string `json:"userId"`
 	Token   string `json:"token"`

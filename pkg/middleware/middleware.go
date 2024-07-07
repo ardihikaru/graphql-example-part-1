@@ -7,8 +7,7 @@ import (
 )
 
 const (
-	RequestId     = "X-Request-Id"
-	Authorization = "Authorization"
+	RequestId = "X-Request-Id"
 )
 
 // utility provides the interface for the functionality of logger.Logger and any other common utility
