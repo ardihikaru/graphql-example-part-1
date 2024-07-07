@@ -5,7 +5,7 @@ import (
 	"github.com/go-chi/cors"
 
 	"github.com/ardihikaru/graphql-example-part-1/internal/application"
-	"github.com/ardihikaru/graphql-example-part-1/internal/router/graphql"
+	gqlrouter "github.com/ardihikaru/graphql-example-part-1/internal/router/graphql"
 
 	"github.com/ardihikaru/graphql-example-part-1/pkg/logger"
 )

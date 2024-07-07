@@ -108,13 +108,17 @@ func (svc *Service) GetById(userId int64) (*model.User, error) {
 // GetUserIdByUsername gets user data by username
 func (svc *Service) GetUserIdByUsername(username string) (int, error) {
 	var err error
+	var userId int
 
 	userData, _, err := svc.storage.GetUserCredByUsername(username)
 	if err != nil {
 		return 0, err
 	}
 
-	userId, err := strconv.Atoi(userData.UserID)
+	userId, err = strconv.Atoi(userData.UserID)
+	if err != nil {
+		return 0, err
+	}
 
 	return userId, nil
 }

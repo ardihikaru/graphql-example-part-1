@@ -21,6 +21,9 @@ import (
 var Version = "development"
 
 func main() {
+	var err error
+	var name string
+
 	// loads configuration
 	cfg, err := config.Get()
 	if err != nil {
@@ -40,7 +43,7 @@ func main() {
 	}
 
 	// configures logger
-	log, err := logger.New(cfg.Log.Level, cfg.Log.Format, cfg.Http.LogHttpRequest, cfg.LogPublisher)
+	log, err := logger.New(cfg.Log.Level, cfg.Log.Format, cfg.Http.LogHttpRequest, &cfg.LogPublisher)
 	if err != nil {
 		e.FatalOnError(err, "failed to prepare the logger")
 	}
@@ -49,7 +52,11 @@ func main() {
 	deps := application.BuildDependencies(cfg, log)
 
 	// shows the build version
-	name, err := os.Hostname()
+	name, err = os.Hostname()
+	if err != nil {
+		e.FatalOnError(err, "failed to extract hostname value")
+	}
+
 	log.Info("starting API service",
 		zap.String("Service ID", deps.SvcId),
 		zap.String("Hostname", name),
@@ -68,33 +75,6 @@ func main() {
 	<-c
 	log.Info("gracefully shutting down the system")
 	os.Exit(0)
-
-	//// creates a new router
-	//router := chi.NewRouter()
-	//
-	//// -- route - config
-	//c := cors.New(cors.Options{
-	//	AllowedOrigins:   []string{"*"},
-	//	AllowedHeaders:   []string{"*"},
-	//	AllowCredentials: true,
-	//	Debug:            false,
-	//})
-	//router.Use(c.Handler)
-
-	//// mounts Routes
-	//routes.MountRoutes(router)
-	//
-	//// init DB
-	//database.InitDB(log, cfg)
-	//defer database.Handle.Close()
-	//defer database.HandleSeq.Close()
-	//
-	//// starts the server
-	//log.Info("Connect to http://localhost:" + port + "/ for GraphQL playground")
-	//err = http.ListenAndServe(":"+port, router)
-	//if err != nil {
-	//	e.FatalOnError(err, "failed to start server")
-	//}
 }
 
 // startAPiService starts the api service

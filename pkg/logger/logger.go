@@ -35,7 +35,7 @@ const (
 type Logger struct {
 	*zap.Logger
 	logHttpRequest bool
-	cfg            config.LogPublisher
+	cfg            *config.LogPublisher
 	publisher      rmqinterface.Publisher
 }
 
@@ -59,10 +59,14 @@ type params struct {
 // init initializes prefix value
 // FYI: this function adopts go-chi middleware
 func init() {
-	hostname, err := os.Hostname()
+	var err error
+	var hostname string
+
+	hostname, err = os.Hostname()
 	if hostname == "" || err != nil {
 		hostname = "localhost"
 	}
+
 	var buf [12]byte
 	var b64 string
 	for len(b64) < 10 {
@@ -78,7 +82,7 @@ func init() {
 }
 
 // New creates a new Logger with given logLevel and logFormat as part of a permanent field of the logger.
-func New(logLevel, logFormat string, logHttpRequest bool, cfg config.LogPublisher) (*Logger, error) {
+func New(logLevel, logFormat string, logHttpRequest bool, cfg *config.LogPublisher) (*Logger, error) {
 	if logFormat == logFormatText {
 		logFormat = logFormatConsole
 	}
