@@ -44,6 +44,7 @@ Global Template Repository for Development and Operations Of Your Projects.
 * [Development](#development)
 * [Usage](#usage)
 * [Generate private and public key](#generate-private-and-public-key)
+* [Using graphQL generator](#using-graphql-generator)
 * [Contributing](#contributing)
 * [License](#license)
 
@@ -99,6 +100,20 @@ Reference and programming instructional materials.
   # optional: convert pem to pfx
   openssl pkcs12 -export -inkey private-key.pem -in cert.pem -out cert.pfx
   ```
+
+## Using GraphQL Generator
+
+* Cli command to use (one by one)
+```shell
+go get github.com/99designs/gqlgen@v0.17.45
+
+go run github.com/99designs/gqlgen generate
+```
+
+* Cli command to use (at once)
+```shell
+go get github.com/99designs/gqlgen@v0.17.45 && go run github.com/99designs/gqlgen generate
+```
 
 ## Contributing
 

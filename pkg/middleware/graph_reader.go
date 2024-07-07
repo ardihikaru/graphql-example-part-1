@@ -16,9 +16,22 @@ type bodyGraphQL struct {
 	Query         string                 `json:"query"`
 }
 
-func GraphQueryReader(whitelistFunctions []string) func(http.Handler) http.Handler {
+func (rs *Resource) GraphQueryReader(whitelistFunctions []string) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			// fix unexpected result due to graphQL playground is currently not working properly
+			if r.Method == http.MethodGet {
+				// passes the captured values to the context
+				ctx := r.Context()
+				ctx = context.WithValue(ctx, RequestFunctionNameKey, "-")
+				ctx = context.WithValue(ctx, PublicFunctionKey, true)
+
+				r = r.WithContext(ctx)
+				next.ServeHTTP(w, r)
+
+				return
+			}
+
 			buf, err := io.ReadAll(r.Body)
 			if err != nil {
 				next.ServeHTTP(w, r)

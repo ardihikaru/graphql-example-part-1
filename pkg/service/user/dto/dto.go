@@ -1,6 +1,6 @@
 package dto
 
-import "github.com/ardihikaru/graphql-example-part-1/internal/graph/model"
+import "github.com/ardihikaru/graphql-example-part-1/pkg/graph/user/model"
 
 type User model.User
 

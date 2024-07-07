@@ -6,10 +6,16 @@ package graph
 
 import (
 	"context"
+	"fmt"
 
-	"github.com/ardihikaru/graphql-example-part-1/internal/graph/generated"
-	"github.com/ardihikaru/graphql-example-part-1/internal/graph/model"
+	"github.com/ardihikaru/graphql-example-part-1/pkg/graph/role/generated"
+	"github.com/ardihikaru/graphql-example-part-1/pkg/graph/role/model"
 )
+
+// RoleCreate is the resolver for the roleCreate field.
+func (r *mutationResolver) RoleCreate(ctx context.Context, data model.RoleInput) (*model.Role, error) {
+	panic(fmt.Errorf("not implemented: RoleCreate - roleCreate"))
+}
 
 // RoleGet is the resolver for the roleGet field.
 func (r *queryResolver) RoleGet(ctx context.Context, roleID *string) (*model.Role, error) {
@@ -18,7 +24,11 @@ func (r *queryResolver) RoleGet(ctx context.Context, roleID *string) (*model.Rol
 	}, nil
 }
 
+// Mutation returns generated.MutationResolver implementation.
+func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
+
 // Query returns generated.QueryResolver implementation.
 func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
+type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }

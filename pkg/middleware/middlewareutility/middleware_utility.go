@@ -6,11 +6,10 @@ import (
 
 	"go.uber.org/zap/zapcore"
 
-	"github.com/ardihikaru/graphql-example-part-1/internal/service/session"
-
 	"github.com/ardihikaru/graphql-example-part-1/pkg/enforcer"
 	"github.com/ardihikaru/graphql-example-part-1/pkg/logger"
 	"github.com/ardihikaru/graphql-example-part-1/pkg/middleware"
+	"github.com/ardihikaru/graphql-example-part-1/pkg/service/session"
 )
 
 // storage provides the interface for the functionality to fetch information from the table resource_group in the DB
@@ -69,7 +68,8 @@ func (svc *Service) AuthorizeResolver(act string) func(next http.Handler) http.H
 
 			// gets current user/subject
 			sessionData := r.Context().Value(middleware.SessionKey).(session.Session)
-			svc.log.Debug(fmt.Sprintf("captured subject (userId): %s", sessionData.Username))
+			svc.log.Debug(fmt.Sprintf("captured subject (userId/username): %d/%s", sessionData.UserId,
+				sessionData.Username))
 			sub := sessionData.UserId
 
 			// loads policy from Database

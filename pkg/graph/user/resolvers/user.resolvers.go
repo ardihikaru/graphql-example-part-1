@@ -10,27 +10,26 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/ardihikaru/graphql-example-part-1/internal/graph/generated"
-	"github.com/ardihikaru/graphql-example-part-1/internal/graph/model"
-	"github.com/ardihikaru/graphql-example-part-1/internal/service/auth"
-	"github.com/ardihikaru/graphql-example-part-1/internal/service/session"
+	"github.com/ardihikaru/graphql-example-part-1/pkg/graph/user/generated"
+	"github.com/ardihikaru/graphql-example-part-1/pkg/graph/user/model"
 	"github.com/ardihikaru/graphql-example-part-1/pkg/middleware"
+	"github.com/ardihikaru/graphql-example-part-1/pkg/service/session"
 )
 
 // UserLogin generates a token based on the provided credential
 func (r *mutationResolver) UserLogin(ctx context.Context, userName string, password string) (*model.TokenResponse, error) {
-	correct, err := r.UserSvc.Authenticate(userName, password)
+	correct, err := r.Authenticate(userName, password)
 	if !correct {
 		return nil, err
 	}
 
-	userId, err := r.UserSvc.GetUserIdByUsername(userName)
+	userId, err := r.GetUserIdByUsername(userName)
 	if err != nil {
 		return nil, err
 	}
 
-	authorizerSvc := auth.NewService(r.Log, r.Cfg.JwtAuth.ExpiredInSec, r.TokenAuth)
-	token, err := authorizerSvc.Authorize(userId, userName)
+	//authorizerSvc := auth.NewService(r.Log, r.Cfg.JwtAuth.ExpiredInSec, r.TokenAuth)
+	token, err := r.utility.Authorize(userId, userName)
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +46,7 @@ func (r *mutationResolver) UserCreate(ctx context.Context, data model.UserInput)
 	// extracts session from the context
 	sessionData := ctx.Value(middleware.SessionKey).(session.Session)
 
-	resp, err := r.UserSvc.Create(data, &sessionData.UserId)
+	resp, err := r.Create(data, &sessionData.UserId)
 	return resp, err
 }
 
@@ -58,7 +57,7 @@ func (r *mutationResolver) UserUpdate(ctx context.Context, data model.UserInput)
 
 // PasswordEncrypt encrypts the provided password
 func (r *mutationResolver) PasswordEncrypt(ctx context.Context, password string) (string, error) {
-	passwordEncrypted, err := r.UserSvc.EncryptPassword(password, r.Cfg.Encryption.PublicKeyRSA)
+	passwordEncrypted, err := r.EncryptPassword(password, r.cfg.Encryption.PublicKeyRSA)
 	return base64.StdEncoding.EncodeToString(passwordEncrypted), err
 }
 
@@ -69,15 +68,19 @@ func (r *queryResolver) UserGet(ctx context.Context, userID *string) (*model.Use
 		setUserId, _ = strconv.ParseInt(*userID, 10, 64)
 	}
 
-	return r.UserSvc.GetById(setUserId)
+	return r.GetById(setUserId)
 }
 
 // UserList fetches list of user
 func (r *queryResolver) UserList(ctx context.Context, userID string, statusCd string) ([]*model.User, error) {
-	return r.UserSvc.List(userID, statusCd)
+	return r.List(userID, statusCd)
 }
 
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 
+// Query returns generated.QueryResolver implementation.
+func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
+
 type mutationResolver struct{ *Resolver }
+type queryResolver struct{ *Resolver }

@@ -7,9 +7,12 @@ import (
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/ardihikaru/graphql-example-part-1/internal/application"
-	"github.com/ardihikaru/graphql-example-part-1/internal/service/user"
+	s "github.com/ardihikaru/graphql-example-part-1/internal/storage/user"
+
 	"github.com/ardihikaru/graphql-example-part-1/pkg/config"
 	"github.com/ardihikaru/graphql-example-part-1/pkg/logger"
+	"github.com/ardihikaru/graphql-example-part-1/pkg/mysqldb"
+	"github.com/ardihikaru/graphql-example-part-1/pkg/service/user"
 	e "github.com/ardihikaru/graphql-example-part-1/pkg/utils/error"
 )
 
@@ -50,9 +53,15 @@ func main() {
 		e.FatalOnError(err, "failed to hash the plain password")
 	}
 
+	// builds user storage
+	userStorage := s.Store{Storage: &mysqldb.Storage{
+		Db:  deps.Db,
+		Log: deps.Log,
+	}}
+
 	// encrypts the plain password
 	// FYI: the encrypted plain password will be decrypted, hashed and be compared with the hashed password in the database
-	usrSvc := user.NewService(log, deps.Db, cfg)
+	usrSvc := user.NewService(log, &userStorage, cfg)
 	encryptedValue, err := usrSvc.EncryptPassword(plainPasswd, cfg.Encryption.PublicKeyRSA)
 	if err != nil {
 		log.Error(fmt.Sprintf("encryption failed: %s", err.Error()))

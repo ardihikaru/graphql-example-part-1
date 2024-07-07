@@ -2,6 +2,15 @@ type Role {
   roleId: ID! @goTag(key: "db", value: "role_id")
 }
 
+input RoleInput {
+  roleId: ID!
+  role: String!
+}
+
 extend type Query {
   roleGet(roleId: ID): Role!
+}
+
+extend type Mutation {
+  roleCreate(data: RoleInput!): Role!
 }
