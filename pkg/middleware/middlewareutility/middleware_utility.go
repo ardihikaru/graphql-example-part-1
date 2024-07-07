@@ -52,6 +52,16 @@ func (svc *Service) Log(level zapcore.Level, msg string) {
 	}
 }
 
+// Enforce enforces control access of the user
+func (svc *Service) Enforce(sub, obj, act string) (bool, error) {
+	return svc.Enforcer.Enforce(sub, obj, act)
+}
+
+// LoadPolicy reloads the policy from file/database.
+func (svc *Service) LoadPolicy() error {
+	return svc.Enforcer.LoadPolicy()
+}
+
 // AuthorizeResolver is a middleware to manage resolver function's access control based on the captured session
 func (svc *Service) AuthorizeResolver(act string) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {

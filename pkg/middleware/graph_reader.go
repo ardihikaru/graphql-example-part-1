@@ -19,6 +19,8 @@ type bodyGraphQL struct {
 func (rs *Resource) GraphQueryReader(whitelistFunctions []string) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			//var firstParenthesesIdx int
+
 			// fix unexpected result due to graphQL playground is currently not working properly
 			if r.Method == http.MethodGet {
 				// passes the captured values to the context
@@ -67,13 +69,12 @@ func (rs *Resource) GraphQueryReader(whitelistFunctions []string) func(http.Hand
 			// captures indexes of the `{` symbol
 			firstCurlyBracket := strings.IndexAny(body.Query, "{")
 
-			// captures indexes of the `(` symbol
-			firstParenthesesIdx := strings.Index(body.Query, "(")
-
 			// re-capture the query
 			subStrQuery := strings.TrimSpace(subStr(body.Query, firstCurlyBracket+1, len(body.Query)))
-			firstParenthesesIdx = strings.Index(subStrQuery, "(")
-			functionName := subStr(subStrQuery, 0, firstParenthesesIdx)
+
+			// captures indexes of the `(` symbol
+			idx := strings.Index(subStrQuery, "(")
+			functionName := subStr(subStrQuery, 0, idx)
 
 			// passes the captured values to the context
 			ctx := r.Context()

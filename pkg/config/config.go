@@ -12,14 +12,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-type Reader interface {
-	Get(key string) string
-}
-
-type ViperConfigReader struct {
-	viper *viper.Viper
-}
-
 type General struct {
 	BuildMode string `mapstructure:"buildMode"`
 }

@@ -76,6 +76,20 @@ Say what the step will be clone this repository.
 git clone git@github.com:ardihikaru/graphql-example-part-1.git
 ```
 
+* Golang linter
+* `golang-ci` is one of the **IMPORTANT** packages. Any developer who will maintain this project should install it. The
+  installation command is as follows:
+  ```shell
+  go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.46.2
+  ```
+* Everytime the code is updated, please run following command:
+  ```shell
+  golangci-lint run ./...
+  
+  # or this command:
+  golangci-lint run ./... --fast -v
+  ```
+
 ## Development
 
 - N/A

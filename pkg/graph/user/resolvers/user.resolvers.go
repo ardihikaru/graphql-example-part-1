@@ -46,8 +46,7 @@ func (r *mutationResolver) UserCreate(ctx context.Context, data model.UserInput)
 	// extracts session from the context
 	sessionData := ctx.Value(middleware.SessionKey).(session.Session)
 
-	resp, err := r.Create(data, &sessionData.UserId)
-	return resp, err
+	return r.Create(data, &sessionData.UserId)
 }
 
 // UserUpdate is the resolver for the userUpdate field.

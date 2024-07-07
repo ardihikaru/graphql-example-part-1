@@ -4,8 +4,8 @@ import (
 	"github.com/go-chi/chi"
 
 	"github.com/ardihikaru/graphql-example-part-1/internal/application"
-	"github.com/ardihikaru/graphql-example-part-1/internal/router/graphql/role"
-	"github.com/ardihikaru/graphql-example-part-1/internal/router/graphql/user"
+	rolegraph "github.com/ardihikaru/graphql-example-part-1/internal/router/graphql/role"
+	usergraph "github.com/ardihikaru/graphql-example-part-1/internal/router/graphql/user"
 	"github.com/ardihikaru/graphql-example-part-1/internal/service/session"
 	"github.com/ardihikaru/graphql-example-part-1/internal/storage/resourcerolemap"
 

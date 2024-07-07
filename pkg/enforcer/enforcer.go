@@ -3,7 +3,7 @@ package enforcer
 import (
 	"fmt"
 
-	"github.com/casbin/casbin/v2"
+	casbin "github.com/casbin/casbin/v2"
 	sqlxadapter "github.com/developersismedika/casbin-sqlx-adapter"
 	"github.com/developersismedika/sqlx"
 

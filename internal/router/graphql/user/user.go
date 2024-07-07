@@ -17,7 +17,7 @@ import (
 	s "github.com/ardihikaru/graphql-example-part-1/internal/storage/user"
 
 	"github.com/ardihikaru/graphql-example-part-1/pkg/graph/user/generated"
-	"github.com/ardihikaru/graphql-example-part-1/pkg/graph/user/resolvers"
+	graph "github.com/ardihikaru/graphql-example-part-1/pkg/graph/user/resolvers"
 	"github.com/ardihikaru/graphql-example-part-1/pkg/mysqldb"
 	"github.com/ardihikaru/graphql-example-part-1/pkg/service/user"
 )

@@ -13,7 +13,7 @@ import (
 	"github.com/ardihikaru/graphql-example-part-1/internal/application"
 
 	"github.com/ardihikaru/graphql-example-part-1/pkg/graph/role/generated"
-	"github.com/ardihikaru/graphql-example-part-1/pkg/graph/role/resolvers"
+	graph "github.com/ardihikaru/graphql-example-part-1/pkg/graph/role/resolvers"
 )
 
 const (
